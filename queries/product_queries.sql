@@ -7,7 +7,13 @@
 -- Query 1
 -- Get all products
 
-SELECT * FROM products;
+SELECT
+	p.product_id,
+	p.product_name,
+	p.price,
+	s.supplier_name
+FROM products p
+LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id;
 
 
 
@@ -15,9 +21,14 @@ SELECT * FROM products;
 -- Find products under a specific category
 -- NOTE: This will break after normalization
 
-SELECT *
-FROM products
-WHERE categories LIKE '%Electronics%';
+SELECT DISTINCT
+	p.product_id,
+	p.product_name,
+	p.price
+FROM products p
+JOIN product_categories pc ON p.product_id = pc.product_id
+JOIN categories c ON pc.category_id = c.category_id
+WHERE c.category_name = 'Electronics';
 
 
 
@@ -25,17 +36,25 @@ WHERE categories LIKE '%Electronics%';
 -- Find supplier details for a product
 -- NOTE: supplier data currently lives inside products table
 
-SELECT product_name, supplier_name, supplier_phone
-FROM products;
+SELECT
+	p.product_name,
+	s.supplier_name,
+	s.supplier_phone
+FROM products p
+JOIN suppliers s ON p.supplier_id = s.supplier_id;
 
 
 
 -- Query 4
 -- Find products with low stock
 
-SELECT product_name, stock_quantity
-FROM products
-WHERE stock_quantity < 10;
+SELECT
+	p.product_name,
+	i.warehouse_location,
+	i.stock_quantity
+FROM products p
+JOIN inventory i ON p.product_id = i.product_id
+WHERE i.stock_quantity < 10;
 
 
 
